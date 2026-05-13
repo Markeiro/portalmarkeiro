@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Brand */
+  --color-brand: #4B6040;
+  --color-brand-light: #6B8560;
+  --color-brand-dark: #2F3D28;
+
+  /* Copper / accent */
+  --color-copper: #B87333;
+  --color-copper-light: #D4935A;
+  --color-copper-dark: #8F5A25;
+
+  /* Cream / background */
+  --color-cream: #F2E8D5;
+  --color-cream-light: #F8F2E6;
+  --color-cream-medium: #E0D4BC;
+
+  /* Charcoal / text */
+  --color-charcoal: #1A1A1A;
+  --color-charcoal-soft: #2C2C2C;
+  --color-charcoal-mid: #4A4A4A;
+
+  /* Muted */
+  --color-muted: #7A6A58;
+  --color-muted-fg: #9A8A78;
+
+  /* Status */
+  --color-success: #3D7A4B;
+  --color-warning: #C28A2A;
+  --color-danger: #B93B3B;
+  --color-info: #2A6CB9;
+
+  /* Fonts */
+  --font-display: "Syne", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+
+  /* Radius */
+  --radius: 0.5rem;
+  --radius-sm: 0.25rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  background: #F8F2E6;
+  color: #1A1A1A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 {
+  font-family: "Syne", sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D4935A55; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #B87333; }
