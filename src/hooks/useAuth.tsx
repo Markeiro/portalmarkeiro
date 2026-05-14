@@ -64,12 +64,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) loadAccess(s.user.id, s.user.email ?? "").finally(() => setLoading(false));
-      else setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session: s } }) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+        if (s?.user) loadAccess(s.user.id, s.user.email ?? "").finally(() => setLoading(false));
+        else setLoading(false);
+      })
+      .catch(() => setLoading(false));
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, s) => {
       setSession(s);
