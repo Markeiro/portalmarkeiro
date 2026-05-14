@@ -43,18 +43,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [allowedModules, setAllowedModules] = useState<Record<string, boolean>>(DEFAULT_MODULES);
   const [loading, setLoading] = useState(true);
 
-  const loadAccess = async (uid: string, email: string) => {
+  const loadAccess = async (_uid: string, email: string) => {
     try {
-      const [{ data: roleData }, { data: accessData }] = await Promise.all([
-        supabase.from("user_roles" as never).select("role").eq("user_id", uid),
-        supabase.from("user_access" as never).select("modules, role").eq("email", email).maybeSingle(),
-      ]);
-      const fetchedRoles: Role[] = ((roleData as { role: Role }[] | null)?.map((r) => r.role) ?? []);
-      setRoles(fetchedRoles);
-      if (fetchedRoles.includes("admin")) {
+      const { data: accessData } = await supabase
+        .from("user_access" as never)
+        .select("modules, role")
+        .eq("email", email)
+        .maybeSingle();
+      const access = accessData as { role: Role; modules: Record<string, boolean> } | null;
+      const role: Role = access?.role ?? "colaborador";
+      setRoles([role]);
+      if (role === "admin") {
         setAllowedModules(Object.fromEntries(Object.keys(DEFAULT_MODULES).map((k) => [k, true])));
-      } else if ((accessData as unknown as { modules: Record<string, boolean> } | null)?.modules) {
-        setAllowedModules({ dashboard: true, ...(accessData as unknown as { modules: Record<string, boolean> }).modules });
+      } else if (access?.modules && Object.keys(access.modules).length > 0) {
+        setAllowedModules({ dashboard: true, ...access.modules });
       } else {
         setAllowedModules({ dashboard: true, clientes: true, campanhas: true, metricas: true });
       }
