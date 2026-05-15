@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
+  <!-- Leaf mark -->
+  <path d="M8 38 C8 38 6 24 18 14 C22 10 28 8 32 10 C28 16 24 24 20 30 C18 34 14 38 8 38Z" fill="#B87333"/>
+  <path d="M8 38 C8 38 16 34 22 26 C26 20 28 14 32 10 C32 10 36 12 36 18 C36 26 28 36 18 40 C14 42 8 38 8 38Z" fill="#4B6040"/>
+  <!-- Text -->
+  <text x="46" y="32" font-family="Syne, system-ui, sans-serif" font-weight="700" font-size="22" fill="#4B6040" letter-spacing="-0.5">markeiro</text>
+</svg>

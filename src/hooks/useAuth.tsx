@@ -1,18 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import type { Role } from "@/types";
 
-const DEFAULT_MODULES: Record<string, boolean> = {
-  dashboard: true,
-  crm: false,
-  clientes: false,
-  campanhas: false,
-  metricas: false,
-  conteudo: false,
-  automacao: false,
-  configuracoes: false,
-};
+type Role = "admin" | "gestor" | "colaborador" | "cliente";
+
+const ALL_MODULES = { hub: true, board: true, comercial: true, marketing: true, cs: true, financeiro: true };
+const DEFAULT_MODULES = { hub: true, board: true, comercial: false, marketing: false, cs: false, financeiro: false };
 
 interface AuthCtx {
   user: User | null;
@@ -21,6 +14,7 @@ interface AuthCtx {
   allowedModules: Record<string, boolean>;
   loading: boolean;
   isAdmin: boolean;
+  canWrite: boolean;
   canAccessModule: (module: string) => boolean;
   signOut: () => Promise<void>;
 }
@@ -32,6 +26,7 @@ const Ctx = createContext<AuthCtx>({
   allowedModules: DEFAULT_MODULES,
   loading: true,
   isAdmin: false,
+  canWrite: false,
   canAccessModule: () => false,
   signOut: async () => {},
 });
@@ -54,14 +49,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const role: Role = access?.role ?? "colaborador";
       setRoles([role]);
       if (role === "admin") {
-        setAllowedModules(Object.fromEntries(Object.keys(DEFAULT_MODULES).map((k) => [k, true])));
+        setAllowedModules(ALL_MODULES);
       } else if (access?.modules && Object.keys(access.modules).length > 0) {
-        setAllowedModules({ dashboard: true, ...access.modules });
+        setAllowedModules({ hub: true, ...access.modules });
       } else {
-        setAllowedModules({ dashboard: true, clientes: true, campanhas: true, metricas: true });
+        setAllowedModules(DEFAULT_MODULES);
       }
     } catch {
-      setAllowedModules({ dashboard: true });
+      setAllowedModules({ hub: true, board: false, comercial: false, marketing: false, cs: false, financeiro: false });
     }
   };
 
@@ -85,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const isAdmin = roles.includes("admin");
+  const canWrite = roles.includes("admin") || roles.includes("gestor");
 
   const canAccessModule = useCallback(
     (module: string) => isAdmin || !!allowedModules[module],
@@ -94,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => { await supabase.auth.signOut(); };
 
   return (
-    <Ctx.Provider value={{ user, session, roles, allowedModules, loading, isAdmin, canAccessModule, signOut }}>
+    <Ctx.Provider value={{ user, session, roles, allowedModules, loading, isAdmin, canWrite, canAccessModule, signOut }}>
       {children}
     </Ctx.Provider>
   );

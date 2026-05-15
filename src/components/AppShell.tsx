@@ -1,183 +1,202 @@
-import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard, Building2, Megaphone, BarChart3,
-  FileImage, Zap, Settings, LogOut, Menu, X, ChevronRight,
-  TrendingUp,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
+import logo from "@/assets/markeiro-logo.svg";
+import {
+  LayoutDashboard, ListOrdered, FileSpreadsheet, Building2, FolderKanban,
+  Tags, DollarSign, TrendingUp, Upload, Settings, LogOut, Menu, X, Receipt, Landmark,
+  Sun, Moon, Layers, Users, PlusCircle, Briefcase, Megaphone, FileText, HeartHandshake, KanbanSquare,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { useTheme } from "@/hooks/useTheme";
 
-interface NavItem {
-  to: string;
-  label: string;
-  icon: React.ElementType;
-  module: string;
-}
-
-const navItems: NavItem[] = [
-  { to: "/dashboard",    label: "Dashboard",  icon: LayoutDashboard, module: "dashboard" },
-  { to: "/crm",          label: "CRM",         icon: TrendingUp,      module: "crm" },
-  { to: "/clientes",     label: "Clientes",    icon: Building2,       module: "clientes" },
-  { to: "/campanhas",    label: "Campanhas",   icon: Megaphone,       module: "campanhas" },
-  { to: "/metricas",     label: "Métricas",    icon: BarChart3,       module: "metricas" },
-  { to: "/conteudo",     label: "Conteúdo",    icon: FileImage,       module: "conteudo" },
-  { to: "/automacao",    label: "Automação",   icon: Zap,             module: "automacao" },
+const hubItems = [
+  { to: "/hub", label: "Hub Dashboard", icon: Layers, end: true },
+  { to: "/hub/projetos", label: "Projetos & Clientes", icon: Users },
+  { to: "/hub/projetos/novo", label: "Novo Projeto", icon: PlusCircle },
 ];
 
-export default function AppShell() {
-  const { user, isAdmin, canAccessModule, signOut } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const navigate = useNavigate();
+const boardItems = [
+  { to: "/hub/board", label: "Board de Tarefas", icon: KanbanSquare },
+];
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success("Sessão encerrada");
-    navigate("/login");
-  };
+const comercialItems = [
+  { to: "/comercial", label: "CRM & Pipeline", icon: Briefcase, end: true },
+  { to: "/propostas", label: "Propostas", icon: FileText },
+  { to: "/propostas/nova", label: "Nova Proposta", icon: PlusCircle },
+];
 
-  const displayName = user?.user_metadata?.name ?? user?.email?.split("@")[0] ?? "Usuário";
-  const displayEmail = user?.email ?? "";
-  const initials = displayName.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase();
+const marketingItems = [
+  { to: "/marketing", label: "Marketing", icon: Megaphone, end: true },
+];
 
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="px-5 py-6 border-b border-brand/20">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-copper flex items-center justify-center shrink-0">
-            <span className="text-white font-display font-bold text-sm">M</span>
-          </div>
-          <div>
-            <p className="font-display font-bold text-white text-base leading-none">Markeiro</p>
-            <p className="text-brand-light text-xs mt-0.5">Portal de Marketing</p>
-          </div>
-        </div>
+const csItems = [
+  { to: "/cs", label: "Customer Success", icon: HeartHandshake, end: true },
+];
+
+const financeItems = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/lancamentos", label: "Lançamentos", icon: ListOrdered },
+  { to: "/contas", label: "Contas a Pagar/Receber", icon: Receipt },
+  { to: "/impostos", label: "Impostos", icon: Landmark },
+  { to: "/dre", label: "DRE", icon: FileSpreadsheet },
+  { to: "/bancos", label: "Bancos", icon: Building2 },
+  { to: "/projetos", label: "Projetos Financeiros", icon: FolderKanban },
+  { to: "/centros-de-custo", label: "Centros de Custo", icon: Tags },
+  { to: "/cambio", label: "Câmbio USD", icon: DollarSign },
+  { to: "/projecoes", label: "Projeções", icon: TrendingUp },
+  { to: "/importar", label: "Importar (IA)", icon: Upload },
+  { to: "/configuracoes", label: "Configurações Financeiras", icon: Settings },
+];
+
+const configItems = [
+  { to: "/configuracoes-gerais", label: "Configurações Gerais", icon: Settings },
+];
+
+export const AppShell = () => {
+  const { user, roles, signOut, canAccessModule } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const nav = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleLogout = async () => { await signOut(); nav("/auth"); };
+
+  const Sidebar = (
+    <aside className="w-64 shrink-0 border-r border-sidebar-border bg-sidebar flex flex-col h-screen sticky top-0">
+      <div className="p-5 border-b border-sidebar-border">
+        <img src={logo} alt="Markeiro" className="h-9 w-auto" />
       </div>
-
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <div className="space-y-0.5">
-          {navItems.map((item) => {
-            if (!canAccessModule(item.module)) return null;
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={() => setSidebarOpen(false)}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group",
-                    isActive
-                      ? "bg-white/15 text-white"
-                      : "text-brand-light hover:bg-white/10 hover:text-white"
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-copper" : "text-brand-light group-hover:text-copper")} />
-                    <span className="flex-1">{item.label}</span>
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-copper" />}
-                  </>
-                )}
+      <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+        {canAccessModule("hub") && (
+          <>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-3 pt-1 pb-2">Hub de Projetos</p>
+            {hubItems.map(({ to, label, icon: Icon, end }) => (
+              <NavLink key={to} to={to} end={end} onClick={() => setOpen(false)}
+                className={({ isActive }) => cn("flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                  isActive ? "bg-primary/15 text-primary border border-primary/20 shadow-glow" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+                )}>
+                <Icon className="h-4 w-4" />{label}
               </NavLink>
-            );
-          })}
-        </div>
-
-        {/* Divider */}
-        <div className="mt-4 pt-4 border-t border-brand/20 space-y-0.5">
-          {(isAdmin || canAccessModule("configuracoes")) && (
-            <NavLink
-              to="/configuracoes"
-              onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group",
-                  isActive ? "bg-white/15 text-white" : "text-brand-light hover:bg-white/10 hover:text-white"
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <Settings className={cn("w-4 h-4 shrink-0", isActive ? "text-copper" : "text-brand-light group-hover:text-copper")} />
-                  <span>Configurações</span>
-                  {isActive && <ChevronRight className="w-3.5 h-3.5 text-copper ml-auto" />}
-                </>
-              )}
-            </NavLink>
-          )}
-        </div>
+            ))}
+          </>
+        )}
+        {canAccessModule("board") && (
+          <>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-3 pt-4 pb-2">Board de Tarefas</p>
+            {boardItems.map(({ to, label, icon: Icon }) => (
+              <NavLink key={to} to={to} onClick={() => setOpen(false)}
+                className={({ isActive }) => cn("flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                  isActive ? "bg-primary/15 text-primary border border-primary/20 shadow-glow" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+                )}>
+                <Icon className="h-4 w-4" />{label}
+              </NavLink>
+            ))}
+          </>
+        )}
+        {canAccessModule("comercial") && (
+          <>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-3 pt-4 pb-2">Comercial</p>
+            {comercialItems.map(({ to, label, icon: Icon, end }) => (
+              <NavLink key={to} to={to} end={end} onClick={() => setOpen(false)}
+                className={({ isActive }) => cn("flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                  isActive ? "bg-primary/15 text-primary border border-primary/20 shadow-glow" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+                )}>
+                <Icon className="h-4 w-4" />{label}
+              </NavLink>
+            ))}
+          </>
+        )}
+        {canAccessModule("marketing") && (
+          <>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-3 pt-4 pb-2">Marketing</p>
+            {marketingItems.map(({ to, label, icon: Icon, end }) => (
+              <NavLink key={to} to={to} end={end} onClick={() => setOpen(false)}
+                className={({ isActive }) => cn("flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                  isActive ? "bg-primary/15 text-primary border border-primary/20 shadow-glow" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+                )}>
+                <Icon className="h-4 w-4" />{label}
+              </NavLink>
+            ))}
+          </>
+        )}
+        {canAccessModule("cs") && (
+          <>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-3 pt-4 pb-2">Customer Success</p>
+            {csItems.map(({ to, label, icon: Icon, end }) => (
+              <NavLink key={to} to={to} end={end} onClick={() => setOpen(false)}
+                className={({ isActive }) => cn("flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                  isActive ? "bg-primary/15 text-primary border border-primary/20 shadow-glow" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+                )}>
+                <Icon className="h-4 w-4" />{label}
+              </NavLink>
+            ))}
+          </>
+        )}
+        {canAccessModule("financeiro") && (
+          <>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-3 pt-4 pb-2">Financeiro</p>
+            {financeItems.map(({ to, label, icon: Icon, end }) => (
+              <NavLink key={to} to={to} end={end} onClick={() => setOpen(false)}
+                className={({ isActive }) => cn("flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                  isActive ? "bg-primary/15 text-primary border border-primary/20 shadow-glow" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+                )}>
+                <Icon className="h-4 w-4" />{label}
+              </NavLink>
+            ))}
+          </>
+        )}
+        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-3 pt-4 pb-2">Configurações</p>
+        {configItems.map(({ to, label, icon: Icon }) => (
+          <NavLink key={to} to={to} onClick={() => setOpen(false)}
+            className={({ isActive }) => cn("flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+              isActive ? "bg-primary/15 text-primary border border-primary/20 shadow-glow" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+            )}>
+            <Icon className="h-4 w-4" />{label}
+          </NavLink>
+        ))}
       </nav>
-
-      {/* User */}
-      <div className="px-3 py-4 border-t border-brand/20">
-        <div className="flex items-center gap-3 px-2 py-2">
-          <div className="w-8 h-8 rounded-full bg-copper flex items-center justify-center shrink-0">
-            <span className="text-white text-xs font-bold">{initials}</span>
+      <div className="p-3 border-t border-sidebar-border space-y-2">
+        <div className="px-2 py-2">
+          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+          <div className="flex gap-1 mt-1">
+            {roles.map(r => <Badge key={r} variant="outline" className="text-[10px] py-0 h-4">{r}</Badge>)}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-medium truncate">{displayName}</p>
-            <p className="text-brand-light text-xs truncate">{displayEmail}</p>
-          </div>
-          <button
-            onClick={handleSignOut}
-            className="text-brand-light hover:text-white transition-colors"
-            title="Sair"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
         </div>
+        <Button
+          variant="ghost" size="sm"
+          onClick={toggleTheme}
+          className="w-full justify-start gap-2 text-sidebar-foreground hover:text-foreground"
+          title={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+        >
+          {theme === "dark"
+            ? <><Sun className="h-4 w-4" /> Modo Claro</>
+            : <><Moon className="h-4 w-4" /> Modo Escuro</>
+          }
+        </Button>
+        <Button variant="ghost" size="sm" onClick={handleLogout} className="w-full justify-start gap-2 text-sidebar-foreground hover:text-foreground">
+          <LogOut className="h-4 w-4" /> Sair
+        </Button>
       </div>
-    </div>
+    </aside>
   );
 
   return (
-    <div className="flex h-screen overflow-hidden bg-cream-light">
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex w-60 shrink-0 flex-col bg-brand-dark">
-        <SidebarContent />
-      </aside>
-
-      {/* Mobile sidebar */}
-      {sidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="relative w-64 bg-brand-dark flex flex-col z-10">
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="absolute top-4 right-4 text-brand-light hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <SidebarContent />
-          </aside>
-        </div>
-      )}
-
-      {/* Main */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Mobile topbar */}
-        <header className="lg:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-cream-medium">
-          <button onClick={() => setSidebarOpen(true)} className="text-charcoal-mid">
-            <Menu className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-copper flex items-center justify-center">
-              <span className="text-white font-bold text-xs">M</span>
-            </div>
-            <span className="font-display font-bold text-charcoal text-sm">Markeiro</span>
-          </div>
-        </header>
-
-        {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          <Outlet />
-        </main>
+    <div className="flex min-h-screen bg-background bg-gradient-glow">
+      <div className="hidden lg:block">{Sidebar}</div>
+      {/* Mobile */}
+      <div className="lg:hidden fixed top-3 left-3 z-50">
+        <Button variant="outline" size="icon" onClick={() => setOpen(!open)}>
+          {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        </Button>
       </div>
+      {open && <div className="lg:hidden fixed inset-0 z-40 bg-black/60" onClick={() => setOpen(false)} />}
+      {open && <div className="lg:hidden fixed inset-y-0 left-0 z-40">{Sidebar}</div>}
+
+      <main className="flex-1 min-w-0 p-3 sm:p-6 lg:p-8 pt-14 lg:pt-8 animate-fade-in overflow-x-hidden">
+        <Outlet />
+      </main>
     </div>
   );
-}
+};

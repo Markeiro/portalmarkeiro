@@ -1,71 +1,233 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
 
-@theme {
-  /* Brand */
-  --color-brand: #4B6040;
-  --color-brand-light: #6B8560;
-  --color-brand-dark: #2F3D28;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  /* Copper / accent */
-  --color-copper: #B87333;
-  --color-copper-light: #D4935A;
-  --color-copper-dark: #8F5A25;
+/* ===========================================
+   Markeiro — Design System
+   Verde Musgo + Cobre + Cream
+   =========================================== */
 
-  /* Cream / background */
-  --color-cream: #F2E8D5;
-  --color-cream-light: #F8F2E6;
-  --color-cream-medium: #E0D4BC;
+@layer base {
+  /* ---- LIGHT THEME (default) ---- */
+  :root {
+    --brand-green: 141 20% 31%;
+    --brand-copper: 29 57% 46%;
+    --brand-dark: 140 21% 20%;
 
-  /* Charcoal / text */
-  --color-charcoal: #1A1A1A;
-  --color-charcoal-soft: #2C2C2C;
-  --color-charcoal-mid: #4A4A4A;
+    --background: 40 57% 94%;
+    --foreground: 140 21% 12%;
 
-  /* Muted */
-  --color-muted: #7A6A58;
-  --color-muted-fg: #9A8A78;
+    --card: 40 50% 98%;
+    --card-foreground: 140 21% 12%;
 
-  /* Status */
-  --color-success: #3D7A4B;
-  --color-warning: #C28A2A;
-  --color-danger: #B93B3B;
-  --color-info: #2A6CB9;
+    --popover: 40 50% 98%;
+    --popover-foreground: 140 21% 12%;
 
-  /* Fonts */
-  --font-display: "Syne", sans-serif;
-  --font-sans: "DM Sans", sans-serif;
+    --primary: 141 20% 31%;
+    --primary-foreground: 40 57% 94%;
+    --primary-glow: 29 57% 46%;
 
-  /* Radius */
-  --radius: 0.5rem;
-  --radius-sm: 0.25rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+    --secondary: 40 30% 88%;
+    --secondary-foreground: 140 21% 12%;
+
+    --muted: 40 30% 88%;
+    --muted-foreground: 40 15% 45%;
+
+    --accent: 40 30% 86%;
+    --accent-foreground: 140 21% 12%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 141 20% 31%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 29 57% 46%;
+    --warning-foreground: 140 21% 8%;
+
+    --border: 40 20% 82%;
+    --input: 40 20% 82%;
+    --ring: 141 20% 31%;
+    --radius: 0.75rem;
+
+    /* Sidebar — escuro para identidade visual */
+    --sidebar-background: 140 21% 20%;
+    --sidebar-foreground: 40 30% 75%;
+    --sidebar-primary: 29 57% 46%;
+    --sidebar-primary-foreground: 140 21% 20%;
+    --sidebar-accent: 140 20% 26%;
+    --sidebar-accent-foreground: 40 57% 94%;
+    --sidebar-border: 140 20% 26%;
+    --sidebar-ring: 29 57% 46%;
+
+    --gradient-brand: linear-gradient(135deg, hsl(141 20% 31%), hsl(29 57% 46%));
+    --gradient-surface: linear-gradient(180deg, hsl(40 50% 98%), hsl(40 57% 94%));
+    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(141 20% 31% / 0.06), transparent 70%);
+    --shadow-glow: 0 0 30px hsl(29 57% 46% / 0.20);
+    --shadow-card: 0 2px 12px hsl(140 20% 10% / 0.08);
+    --shadow-elegant: 0 12px 40px -12px hsl(141 20% 31% / 0.2);
+  }
+
+  /* ---- DARK THEME ---- */
+  .dark {
+    --background: 140 21% 8%;
+    --foreground: 40 57% 94%;
+
+    --card: 140 20% 11%;
+    --card-foreground: 40 57% 94%;
+
+    --popover: 140 20% 11%;
+    --popover-foreground: 40 57% 94%;
+
+    --primary: 29 57% 52%;
+    --primary-foreground: 140 21% 8%;
+    --primary-glow: 29 60% 60%;
+
+    --secondary: 140 15% 16%;
+    --secondary-foreground: 40 57% 94%;
+
+    --muted: 140 15% 16%;
+    --muted-foreground: 40 10% 60%;
+
+    --accent: 29 57% 46%;
+    --accent-foreground: 140 21% 8%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 141 20% 40%;
+    --success-foreground: 140 21% 8%;
+
+    --warning: 29 57% 55%;
+    --warning-foreground: 140 21% 8%;
+
+    --border: 140 15% 18%;
+    --input: 140 15% 18%;
+    --ring: 29 57% 46%;
+
+    --sidebar-background: 140 21% 7%;
+    --sidebar-foreground: 40 30% 75%;
+    --sidebar-primary: 29 57% 52%;
+    --sidebar-primary-foreground: 140 21% 8%;
+    --sidebar-accent: 140 20% 13%;
+    --sidebar-accent-foreground: 40 57% 94%;
+    --sidebar-border: 140 20% 14%;
+    --sidebar-ring: 29 57% 52%;
+
+    --gradient-brand: linear-gradient(135deg, hsl(141 20% 40%), hsl(29 57% 52%));
+    --gradient-surface: linear-gradient(180deg, hsl(140 20% 12%), hsl(140 21% 8%));
+    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(29 57% 46% / 0.15), transparent 70%);
+    --shadow-glow: 0 0 40px hsl(29 57% 46% / 0.25);
+    --shadow-card: 0 8px 30px hsl(140 50% 2% / 0.4);
+    --shadow-elegant: 0 20px 50px -20px hsl(29 57% 46% / 0.35);
+  }
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body, #root {
+    @apply bg-background text-foreground;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-feature-settings: 'cv02','cv03','cv04','cv11';
+  }
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: 'Syne', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Smooth theme transition */
+  *, *::before, *::after {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.05s ease;
+  }
+  svg, [class*="animate-"] {
+    transition: none;
+  }
 }
 
-html, body, #root {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  font-family: "DM Sans", sans-serif;
-  background: #F8F2E6;
-  color: #1A1A1A;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-h1, h2, h3 {
-  font-family: "Syne", sans-serif;
+@layer utilities {
+  .bg-gradient-brand { background: var(--gradient-brand); }
+  .bg-gradient-surface { background: var(--gradient-surface); }
+  .bg-gradient-glow { background: var(--gradient-glow); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .text-gradient {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .table-scroll {
+    @apply overflow-x-auto -mx-1 px-1;
+  }
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #D4935A55; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #B87333; }
+aside nav::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+aside nav::-webkit-scrollbar-track,
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+aside nav::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: hsl(var(--sidebar-border));
+  border-radius: 9999px;
+}
+aside nav::-webkit-scrollbar-thumb:hover,
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--sidebar-primary) / 0.5);
+}
+
+/* Recharts theming */
+.recharts-cartesian-grid line {
+  stroke: hsl(var(--border));
+}
+.recharts-text {
+  fill: hsl(var(--muted-foreground)) !important;
+}
+.recharts-legend-item-text {
+  color: hsl(var(--foreground)) !important;
+}
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 8px !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+.recharts-tooltip-label {
+  color: hsl(var(--foreground)) !important;
+}
+
+:root .text-muted-foreground {
+  color: hsl(40 15% 38%);
+}
+.dark .text-muted-foreground {
+  color: hsl(40 10% 60%);
+}
+
+/* Month chip pills */
+.month-chip {
+  @apply px-3 py-1 rounded-full text-sm font-medium transition-all cursor-pointer border;
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
+  background: transparent;
+}
+.month-chip:hover {
+  border-color: hsl(var(--primary) / 0.5);
+  color: hsl(var(--primary));
+}
+.month-chip.active {
+  background: hsl(var(--primary) / 0.12);
+  border-color: hsl(var(--primary) / 0.4);
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
