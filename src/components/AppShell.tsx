@@ -37,7 +37,7 @@ const csItems = [
 ];
 
 const financeItems = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/dashboard", label: "Dashboard Financeiro", icon: LayoutDashboard, end: true },
   { to: "/lancamentos", label: "Lançamentos", icon: ListOrdered },
   { to: "/contas", label: "Contas a Pagar/Receber", icon: Receipt },
   { to: "/impostos", label: "Impostos", icon: Landmark },
